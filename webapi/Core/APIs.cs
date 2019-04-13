@@ -67,32 +67,29 @@ namespace webapi.Core
             }
             catch (Exception)
             {
-
-
+                //do nothing
             }
 
             return response;
 
         }
 
-        //CORE
+        //CORE Tested
         public static string ApiGetCep(string cep)
         {
             string uri = "https://viacep.com.br/ws/" + cep + "/json/";
-            ResponseCEP response = new ResponseCEP();
+            String localidade = null;
             try
             {
                 string responseJSON = new HttpClient().GetStringAsync(uri).Result;
-                response = JsonConvert.DeserializeObject<ResponseCEP>(responseJSON);
-
+                dynamic obj = JsonConvert.DeserializeObject(responseJSON);
+                localidade = JsonConvert.DeserializeObject<String>(JsonConvert.SerializeObject(obj["localidade"]));
             }
             catch (Exception)
             {
-
-
+                //do nothing
             }
-
-            return response.localidade;
+            return localidade;
 
         }
 

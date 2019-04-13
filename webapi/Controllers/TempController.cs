@@ -103,7 +103,7 @@ namespace webapi.Controllers
             return Ok(tCity.city);
         }
 
-        // POST: 
+        // POST: Tested
         [Route("cities/by_cep/{cep}")]
         [HttpPost]
         public IHttpActionResult PostCep(string cep)
@@ -112,7 +112,7 @@ namespace webapi.Controllers
             return Post(city_name);
         }
 
-        // DELETE:
+        // DELETE: Tested
         [Route("cities/{city_name}")]
         [HttpDelete]
         public IHttpActionResult Delete(string city_name)
