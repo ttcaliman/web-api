@@ -14,7 +14,8 @@ namespace webapi.Core
         {
             DBEntities database;
             Temperature tTemperature;
-            while (true)
+            bool repeat = true;
+            while (repeat)
             {
                 database = new DBEntities();
                 try
@@ -59,16 +60,16 @@ namespace webapi.Core
         {
             string uri = "https://api.hgbrasil.com/weather/?format=json&city_name=" + city_name + "&array_limit=2&fields=only_results,temp,city_name,time,date&key=04f6182c";
             ResponseTemp response = new ResponseTemp();
-            try
-            {
+            //try
+            //{
                 string responseJSON = new HttpClient().GetStringAsync(uri).Result;
                 response = JsonConvert.DeserializeObject<ResponseTemp>(responseJSON);
 
-            }
-            catch (Exception)
-            {
-                //do nothing
-            }
+            //}
+            //catch (Exception)
+            //{
+            //    //do nothing
+            //}
 
             return response;
 

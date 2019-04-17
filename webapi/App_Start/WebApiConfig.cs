@@ -10,8 +10,10 @@ namespace webapi
 {
     public static class WebApiConfig
     {
+        
         public static void Register(HttpConfiguration config)
         {
+            
             // Serviços e configuração da API da Web
                 
             // Rotas da API da Web
@@ -24,7 +26,6 @@ namespace webapi
             );
             config.Formatters.Remove(config.Formatters.XmlFormatter);
             config.Formatters.JsonFormatter.Indent = true;
-
             Thread T1 = new Thread(APIs.RefreshTemp);
             T1.Start();
         }
