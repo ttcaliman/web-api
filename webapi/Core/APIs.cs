@@ -20,6 +20,7 @@ namespace webapi.Core
                 database = new DBEntities();
                 try
                 {
+
                     foreach (var vCity in database.City.ToList())
                     {
                         try
