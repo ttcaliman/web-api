@@ -59,11 +59,12 @@ namespace webapi.Core
         //CORE 1 bug: retorna "Sao Paulo" como default
         public static ResponseTemp ApiGet(string city_name)
         {
-            string uri = "https://api.hgbrasil.com/weather/?format=json&city_name=" + city_name + "&array_limit=2&fields=only_results,temp,city_name,time,date&key=04f6182c";
             ResponseTemp response = new ResponseTemp();
             //try
             //{
-                string responseJSON = new HttpClient().GetStringAsync(uri).Result;
+                string responseJSON = new HttpClient().GetStringAsync(
+                    "https://api.hgbrasil.com/weather/?format=json&city_name=" + city_name + 
+                    "&array_limit=2&fields=only_results,temp,city_name,time,date&key=04f6182c").Result;
                 response = JsonConvert.DeserializeObject<ResponseTemp>(responseJSON);
 
             //}
@@ -79,13 +80,16 @@ namespace webapi.Core
         //CORE Tested
         public static string ApiGetCep(string cep)
         {
-            string uri = "https://viacep.com.br/ws/" + cep + "/json/";
             String localidade = null;
             try
             {
-                string responseJSON = new HttpClient().GetStringAsync(uri).Result;
+                string responseJSON = new HttpClient().GetStringAsync(
+                    "https://viacep.com.br/ws/" + cep + "/json/").Result;
+
                 dynamic obj = JsonConvert.DeserializeObject(responseJSON);
-                localidade = JsonConvert.DeserializeObject<String>(JsonConvert.SerializeObject(obj["localidade"]));
+
+                localidade = JsonConvert.DeserializeObject<String>(
+                    JsonConvert.SerializeObject(obj["localidade"]));
             }
             catch (Exception)
             {

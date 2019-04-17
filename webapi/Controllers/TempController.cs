@@ -11,31 +11,29 @@ namespace webapi.Controllers
 {
     public class TempController : ApiController
     {
+        List<MCity> mCities = new List<MCity>();
+        List<MTemperature> mTemperatures = new List<MTemperature>();
+        MCity mCity = new MCity();
+        MTemperature mTemperature = new MTemperature();
+        City tCity = new City();
 
-        // GET:Tested
+        // GET
         [Route("temperatures")]
         [HttpGet]
         public HttpResponseMessage Get()
         {
-            List<MCity> mCities = new List<MCity>();
-            List<MTemperature> mTemperatures = new List<MTemperature>();
-            MCity mCity = new MCity();
-            MTemperature mTemperature;
             using (DBEntities database = new DBEntities())
             {
                 foreach (var vCity in database.City.ToList())
-                 {
-                    mTemperature = new MTemperature();//ex
+                {
 
                     mCity.Id = vCity.Id;
                     mCity.city = vCity.city;
-                    //var vTemperature = (database.Temperature.LastOrDefault(t => t.City_id == vCity.Id));
                     var vTemperature = (database.Temperature.Where(t => t.City_id == vCity.Id).ToList()).LastOrDefault();
-                   // vTemperature.Last();
                     if (vTemperature != null)
                     {
                         mTemperature.Id = vTemperature.Id;
-                        mTemperature.date = "" + vTemperature.date;//gambiarra
+                        mTemperature.date = vTemperature.date.ToString();
                         mTemperature.temperature = vTemperature.temperature;
                         mTemperature.City_id = vTemperature.City_id;
                         mTemperatures.Add(mTemperature);
@@ -48,17 +46,14 @@ namespace webapi.Controllers
 
             }
             return Request.CreateResponse(HttpStatusCode.OK, mCities);
-            //return Content(HttpStatusCode.OK, mCities);
+
         }
 
-        // GET:Tested
+        // GET NAME
         [Route("cities/{city_name}/temperatures")]
         [HttpGet]
         public HttpResponseMessage Get(string city_name)
         {
-            MCity mCity = new MCity();
-            MTemperature mTemperature = new MTemperature();
-            List<MTemperature> mTemperatures = new List<MTemperature>();
             using (DBEntities database = new DBEntities())
             {
                 var vCity = database.City.FirstOrDefault(c => c.city == city_name);
@@ -71,7 +66,7 @@ namespace webapi.Controllers
                 foreach (var vTemperature in database.Temperature.Where(t => t.City_id == vCity.Id))
                 {
                     mTemperature.Id = vTemperature.Id;
-                    mTemperature.date = "" + vTemperature.date;//gambiarra
+                    mTemperature.date = vTemperature.date.ToString();
                     mTemperature.temperature = vTemperature.temperature;
                     mTemperature.City_id = vTemperature.City_id;
                     mTemperatures.Add(mTemperature);
@@ -81,21 +76,13 @@ namespace webapi.Controllers
             }
             return Request.CreateResponse(HttpStatusCode.OK, mCity);
 
-            // return Content(HttpStatusCode.OK, mCity);
-            //return Ok(mCity);
         }
 
-        // POST:Tested
+        // POST
         [Route("cities/{city_name}")]
         [HttpPost]
         public HttpResponseMessage Post(string city_name)
         {
-            //used by cep
-            if (city_name == null)
-            {
-                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "city_name id null");
-            }
-            City tCity = new City();
             var response = APIs.ApiGet(city_name);
             using (DBEntities database = new DBEntities())
             {
@@ -114,21 +101,24 @@ namespace webapi.Controllers
 
         }
 
-        // POST: Tested
+        // POST CEP
         [Route("cities/by_cep/{cep}")]
         [HttpPost]
         public HttpResponseMessage PostCep(string cep)
         {
             string city_name = APIs.ApiGetCep(cep);
+            if (city_name == null)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "city_name is null");
+            }
             return Post(city_name);
         }
 
-        // DELETE: Tested
+        // DELETE
         [Route("cities/{city_name}")]
         [HttpDelete]
         public HttpResponseMessage Delete(string city_name)
         {
-            City tCity = new City();
             using (DBEntities database = new DBEntities())
             {
                 tCity = database.City.FirstOrDefault(c => c.city == city_name);
@@ -137,6 +127,7 @@ namespace webapi.Controllers
                     return Request.CreateErrorResponse(HttpStatusCode.NotFound, "city not registred");
 
                 }
+
                 database.City.Remove(tCity);
                 database.SaveChanges();
             }
@@ -144,12 +135,11 @@ namespace webapi.Controllers
 
         }
 
-        // DELETE:Tested
+        // DELETE TEMP
         [Route("cities/{city_name}/temperatures")]
         [HttpDelete]
         public HttpResponseMessage DeleteTemps(string city_name)
         {
-            City tCity = new City();
             using (DBEntities database = new DBEntities())
             {
                 var vCity = database.City.FirstOrDefault(c => c.city == city_name);
@@ -158,10 +148,11 @@ namespace webapi.Controllers
                     return Request.CreateErrorResponse(HttpStatusCode.NotFound, "city not found");
                 }
                 var vTemperatures = database.Temperature.Where(t => t.City.city == vCity.city).ToList();
+
                 database.Temperature.RemoveRange(vTemperatures);
                 //try
                 //{
-                    database.SaveChanges();
+                database.SaveChanges();
                 //}
                 //catch (Exception)
                 //{

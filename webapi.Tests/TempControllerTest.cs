@@ -2,7 +2,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Web.Http;
 using webapi.Controllers;
-using webapi.Core;
 using System.Net.Http;
 using System.Net;
 
@@ -69,7 +68,7 @@ namespace webapi.Tests
         public void GetOneNotFoundTest()
         {
             
-
+            
             var result = controller.Get("asdasd");
 
             Assert.AreEqual(HttpStatusCode.NotFound, result.StatusCode);
